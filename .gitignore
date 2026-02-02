@@ -1,0 +1,13 @@
+# Assembly Build Artifacts
+*.obj
+*.exe
+*.map
+*.lst
+*.COM
+
+# Editor/OS Temp Files
+.VSCode/
+*.swp
+*~
+Thumbs.db
+Desktop.ini
