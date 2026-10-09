@@ -16,7 +16,6 @@
 # DOSBox / DOSBox-X files that can appear when running the program
 *.OUT
 capture/
-dosbox*.conf
 
 # Tools downloaded for building and testing, Python cache
 tools/
