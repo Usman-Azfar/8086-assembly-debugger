@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8086 Assembly Debugger - Live Demo</title>
+<meta name="description" content="Run a DEBUG.COM-style debugger written in pure 8086 assembly, right in your browser.">
+<link rel="stylesheet" href="https://v8.js-dos.com/latest/js-dos.css">
+<script src="https://v8.js-dos.com/latest/js-dos.js"></script>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #3fb950;
+    --code-bg: #0b0f14;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg) !important; min-height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  a { color: #58a6ff; }
+  header, main, footer { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+  header { padding-top: 28px; padding-bottom: 8px; }
+  h1 { margin: 0 0 6px; font-size: 1.8rem; }
+  .tagline { margin: 0; color: var(--muted); }
+  .links { margin: 14px 0 0; display: flex; gap: 10px; flex-wrap: wrap; }
+  .button {
+    display: inline-block; padding: 7px 14px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--panel);
+    color: var(--text); text-decoration: none; font-size: 0.95rem;
+  }
+  .button:hover { border-color: var(--muted); }
+  main {
+    display: grid; grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 20px; padding-top: 20px; padding-bottom: 20px;
+  }
+  .screen {
+    width: 100%; aspect-ratio: 16 / 10;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    background: #000;
+  }
+  #dos { width: 100%; height: 100%; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 8px 0 0; }
+  aside {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 18px;
+  }
+  aside h2 { margin: 0 0 4px; font-size: 1.1rem; }
+  aside p { margin: 0 0 12px; color: var(--muted); font-size: 0.92rem; }
+  ol { margin: 0; padding-left: 20px; }
+  li { margin-bottom: 12px; font-size: 0.93rem; }
+  code {
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1px 6px; color: var(--accent);
+    white-space: nowrap;
+  }
+  footer { color: var(--muted); font-size: 0.85rem; padding-bottom: 28px; }
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>8086 Assembly Debugger</h1>
+  <p class="tagline">A DEBUG.COM-style debugger written from scratch in pure 8086 assembly, running live in your browser.</p>
+  <div class="links">
+    <a class="button" href="https://github.com/Usman-Azfar/8086-assembly-debugger">Source code on GitHub</a>
+    <a class="button" href="https://github.com/Usman-Azfar/8086-assembly-debugger#how-it-works">How it works</a>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="screen"><div id="dos"></div></div>
+    <p class="hint">The real program runs inside DOSBox compiled to WebAssembly (js-dos). Click the screen, then type commands and press Enter. A physical keyboard works best.</p>
+  </section>
+
+  <aside>
+    <h2>Things to try</h2>
+    <p>Letters can be upper or lower case, and numbers are hexadecimal.</p>
+    <ol>
+      <li><code>r</code> shows the registers, the flags and the next instruction.</li>
+      <li><code>u</code> disassembles the demo program loaded at 0100.</li>
+      <li><code>t</code> executes one real instruction. Repeat it and watch the flags change: <code>OV NG</code> appear after <code>ADD AX,0001</code>.</li>
+      <li><code>t 10</code> runs the rest of the demo. Then <code>d 200 l 10</code> shows the value it stored in memory.</li>
+      <li><code>e 300 'Hello' 0d 0a 24</code> writes a string, and <code>d 300 l 10</code> shows it.</li>
+      <li><code>r f</code>, then <code>cy zr</code>, sets the carry and zero flags.</li>
+      <li><code>h 1234 0fff</code> adds and subtracts in hex.</li>
+      <li><code>?</code> lists every command.</li>
+    </ol>
+  </aside>
+</main>
+
+<footer>
+  This page is rebuilt from the latest source on every push. MIT licensed.
+</footer>
+
+<script>
+  Dos(document.getElementById("dos"), {
+    url: "cproj.jsdos",
+    autoStart: true
+  });
+</script>
+</body>
+</html>

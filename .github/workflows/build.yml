@@ -46,3 +46,33 @@ jobs:
         with:
           name: CPROJ.EXE
           path: src/CPROJ.EXE
+
+  # Publish the live demo (js-dos in the browser) to GitHub Pages
+  deploy-demo:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: CPROJ.EXE
+          path: build
+
+      - name: Build demo site
+        run: python3 web/make_site.py build/CPROJ.EXE _site
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+      - id: deploy
+        uses: actions/deploy-pages@v5
