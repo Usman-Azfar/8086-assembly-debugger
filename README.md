@@ -10,6 +10,8 @@ The whole program assembles to a **6 KB DOS executable** and uses no instruction
 
 No install needed. The demo runs the real `CPROJ.EXE` inside DOSBox compiled to WebAssembly ([js-dos](https://js-dos.com/)), rebuilt from the latest source on every push.
 
+**Quick links:** [Live demo](https://usman-azfar.github.io/8086-assembly-debugger/) · [2-minute tour](#try-it-a-2-minute-tour) · [How to run it](#building-and-running) · [How to test each feature](#testing-each-feature) · [Automated tests](#tests) · [How it works](#how-it-works)
+
 ![Single-stepping the demo program with T](docs/screenshots/trace.png)
 
 *Stepping through the built-in demo program in DOSBox-X. Each `t` runs one real instruction. After `ADD AX,0001` turns `7FFF` into `8000`, the CPU's overflow, sign, auxiliary-carry and parity flags are set (`OV NG AC PE`). After `SUB AX,AX` the zero flag is set (`ZR`).*
@@ -41,6 +43,128 @@ Open the [live demo](https://usman-azfar.github.io/8086-assembly-debugger/), or 
 | `r f`, then `cy zr` | Sets the carry and zero flags; `r` shows `ZR` and `CY` |
 | `x` | An unknown command: a `^ Error` caret points at it |
 | `?` | The list of every command |
+
+## Testing each feature
+
+Each block below is a complete session. Type the lines that start with `-` (without the `-`, which is the prompt) and the replies after `:` prompts, and compare with the output shown. Start each block from a fresh start of the program, in the [live demo](https://usman-azfar.github.io/8086-assembly-debugger/) or [locally](#building-and-running). `xxxx` stands for the segment address, which depends on where DOS loads the program.
+
+### Registers: `R`
+
+```text
+-r ax
+AX 0000
+:1234
+-r bx
+BX 0000
+:
+-r
+AX=1234  BX=0000  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0100   NV UP EI PL NZ NA PO NC
+xxxx:0100 B8FF7F        MOV     AX,7FFF
+```
+
+`AX` takes the new value. Pressing Enter on an empty `:` line keeps the old value, as for `BX`.
+
+### Flags: `R F`
+
+```text
+-r f
+NV UP EI PL NZ NA PO NC -cy zr
+-r
+AX=0000  BX=0000  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0100   NV UP EI PL ZR NA PO CY
+```
+
+Carry (`CY`) and zero (`ZR`) are now set. `nc nz` clears them again. An invalid name such as `xx` is rejected and nothing changes.
+
+### Memory: `E` and `D`
+
+```text
+-e 200 'Hello, World!' 0d 0a 24
+-d 200 l 10
+xxxx:0200  48 65 6C 6C 6F 2C 20 57-6F 72 6C 64 21 0D 0A 24   Hello, World!..$
+```
+
+`E` accepts hex bytes and quoted strings in any mix. `D` shows the bytes in hex, then as ASCII, with `.` for unprintable bytes.
+
+### Fill: `F`
+
+```text
+-f 300 l 20 'AB'
+-d 300 l 20
+xxxx:0300  41 42 41 42 41 42 41 42-41 42 41 42 41 42 41 42   ABABABABABABABAB
+xxxx:0310  41 42 41 42 41 42 41 42-41 42 41 42 41 42 41 42   ABABABABABABABAB
+```
+
+### Disassembler: `U`
+
+```text
+-e 400 cd 21
+-u 400 l 2
+xxxx:0400 CD21          INT     21
+```
+
+A plain `u` lists the built-in demo program at `0100`. The [disasm test](tests/cases/disasm.exp) lists 40 more instructions with their expected output.
+
+### Trace: `T`
+
+```text
+-t
+AX=7FFF  BX=0000  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0103   NV UP EI PL NZ NA PO NC
+xxxx:0103 050100        ADD     AX,0001
+-t
+AX=8000  BX=0000  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0106   OV UP EI NG NZ AC PE NC
+xxxx:0106 29C0          SUB     AX,AX
+```
+
+Each `t` runs one real instruction on the CPU. The [trace test](tests/cases/trace.exp) lists the expected registers and flags for all 15 steps of the demo.
+
+### Tracing a DOS call (`INT 21h`)
+
+This types in a tiny program that prints a string through DOS, then traces it:
+
+```text
+-e 600 b4 09 ba 10 06 cd 21 90
+-e 610 'Hello from DOS!' 0d 0a 24
+-r ip
+IP 0100
+:600
+-t 4
+```
+
+The third step prints `Hello from DOS!`, and `IP` goes from `0605` straight to `0607`: the whole interrupt runs as a single step.
+
+### Safety check
+
+```text
+-r ip
+IP 0100
+:0
+-t
+Not traced: that instruction would end the debugger itself
+```
+
+Offset `0` holds `INT 20h` (program exit), so `T` refuses to run it.
+
+### Hex calculator: `H`
+
+```text
+-h 1234 0fff
+2233  0235
+```
+
+The sum, then the difference.
+
+### Error reporting
+
+```text
+-d 12345
+       ^ Error
+```
+
+The caret points at the character that caused the error, here the fifth digit of a 4-digit number. The [errors test](tests/cases/errors.exp) covers every kind of error.
 
 ## Commands
 
