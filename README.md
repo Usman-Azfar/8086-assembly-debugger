@@ -6,6 +6,10 @@ A machine-level debugger for MS-DOS, written in pure 8086 assembly language and 
 
 The whole program assembles to a **6 KB DOS executable** and uses no instructions newer than the original 8086. The `.8086` directive makes the assembler enforce this.
 
+### ▶ [Try it live in your browser](https://usman-azfar.github.io/8086-assembly-debugger/)
+
+No install needed. The demo runs the real `CPROJ.EXE` inside DOSBox compiled to WebAssembly ([js-dos](https://js-dos.com/)), rebuilt from the latest source on every push.
+
 ![Single-stepping the demo program with T](docs/screenshots/trace.png)
 
 *Stepping through the built-in demo program in DOSBox-X. Each `t` runs one real instruction. After `ADD AX,0001` turns `7FFF` into `8000`, the CPU's overflow, sign, auxiliary-carry and parity flags are set (`OV NG AC PE`). After `SUB AX,AX` the zero flag is set (`ZR`).*
@@ -20,6 +24,23 @@ All screenshots are of the real program running in DOSBox-X.
 | **`U` and `D`:** the demo program disassembled, then dumped as hex and ASCII | **Memory:** entering a string with `E`, filling a pattern with `F`, dumping with `D`, hex arithmetic with `H` |
 | ![Tracing a DOS call](docs/screenshots/dos-call.png) | ![Disassembler](docs/screenshots/disasm.png) |
 | **Tracing a DOS call:** a small program typed in with `E` calls `INT 21h` to print a string. `T` runs the whole interrupt as one step. | **Disassembler:** ModR/M addressing modes, `BYTE`/`WORD PTR`, far jumps, segment and `REP` prefixes |
+
+## Try it: a 2-minute tour
+
+Open the [live demo](https://usman-azfar.github.io/8086-assembly-debugger/), or run it yourself (see [Building and running](#building-and-running)). Click the DOS screen and type these commands, pressing Enter after each:
+
+| Type | What you'll see |
+|---|---|
+| `r` | All registers, the flags (`NV UP EI PL NZ NA PO NC`) and the next instruction, `MOV AX,7FFF` |
+| `u` | The built-in demo program, disassembled |
+| `t` | One real instruction executes: `AX` becomes `7FFF` and `IP` moves to `0103` |
+| `t` | `ADD AX,0001` executes: `AX=8000`, and the CPU sets overflow, sign, auxiliary-carry and parity (`OV NG AC PE`) |
+| `t 10` | The rest of the demo runs; it stores `AX` at `DS:0200` |
+| `d 200 l 10` | A memory dump showing the stored value, `05 00` |
+| `e 300 'Hello' 0d 0a 24` | Writes a string into memory; `d 300 l 10` shows it |
+| `r f`, then `cy zr` | Sets the carry and zero flags; `r` shows `ZR` and `CY` |
+| `x` | An unknown command: a `^ Error` caret points at it |
+| `?` | The list of every command |
 
 ## Commands
 
@@ -88,6 +109,10 @@ src/
 tests/
   run_tests.py  builds the program and runs every test session in DOSBox-X
   cases/        scripted sessions (.in) and the output they must produce (.exp)
+web/
+  index.html    the live-demo page (js-dos)
+  dosbox.conf   DOSBox settings for the demo
+  make_site.py  packs CPROJ.EXE into a js-dos bundle for GitHub Pages
 docs/
   screenshots/  the images in this README
 build.bat       one-line build with JWasm
