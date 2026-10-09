@@ -1,13 +1,34 @@
-# Assembly Build Artifacts
+# Build output (both cases: DOS tools write upper-case names, and
+# matching is case-sensitive on Linux and macOS)
 *.obj
+*.OBJ
 *.exe
-*.map
-*.lst
+*.EXE
+*.com
 *.COM
+*.map
+*.MAP
+*.lst
+*.LST
+*.err
+*.ERR
 
-# Editor/OS Temp Files
+# DOSBox / DOSBox-X files that can appear when running the program
+*.OUT
+capture/
+dosbox*.conf
+
+# Tools downloaded for building and testing, Python cache
+tools/
+__pycache__/
+*.pyc
+
+# Editor and OS files
+.vscode/
 .VSCode/
+.idea/
 *.swp
 *~
+.DS_Store
 Thumbs.db
 Desktop.ini
