@@ -1,0 +1,48 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    env:
+      JWASM_URL: https://github.com/Baron-von-Riedesel/JWasm/releases/download/v2.20/JWasm_v220_win32.zip
+      DOSBOX_URL: https://github.com/joncampbell123/dosbox-x/releases/download/dosbox-x-v2026.10.01/dosbox-x-vsbuild-win64-2026.10.01-portable.zip
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download JWasm and DOSBox-X
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force tools | Out-Null
+          Invoke-WebRequest $env:JWASM_URL -OutFile tools/jwasm.zip
+          Invoke-WebRequest $env:DOSBOX_URL -OutFile tools/dosbox.zip
+          Expand-Archive tools/jwasm.zip -DestinationPath tools/jwasm
+          Expand-Archive tools/dosbox.zip -DestinationPath tools/dosbox
+
+      - name: Assemble
+        shell: pwsh
+        working-directory: src
+        run: ../tools/jwasm/JWasm.exe -mz -Fo CPROJ.EXE CPROJ.ASM
+
+      - name: Run tests in DOSBox-X
+        shell: pwsh
+        run: >
+          python tests/run_tests.py
+          --jwasm tools/jwasm/JWasm.exe
+          --dosbox tools/dosbox/bin/x64/Release/dosbox-x.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CPROJ.EXE
+          path: src/CPROJ.EXE

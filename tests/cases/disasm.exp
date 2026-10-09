@@ -1,0 +1,41 @@
+# Each line decoded by hand from the 8086 opcode map
+xxxx:0500 01D8          ADD     AX,BX
+xxxx:0502 8A4705        MOV     AL,[BX+05]
+xxxx:0505 8B863412      MOV     AX,[BP+1234]
+xxxx:0509 C70600023412  MOV     WORD PTR [0200],1234
+xxxx:050F 807EFE41      CMP     BYTE PTR [BP-02],41
+xxxx:0513 83C4FE        ADD     SP,-02
+xxxx:0516 D1E0          SHL     AX,1
+xxxx:0518 D3F8          SAR     AX,CL
+xxxx:051A F7E3          MUL     BX
+xxxx:051C F606000280    TEST    BYTE PTR [0200],80
+xxxx:0521 FF160002      CALL    [0200]
+xxxx:0525 FF2F          JMP     FAR [BX]
+xxxx:0527 FE07          INC     BYTE PTR [BX]
+xxxx:0529 8CD8          MOV     AX,DS
+xxxx:052B 8EC0          MOV     ES,AX
+xxxx:052D 8D360003      LEA     SI,[0300]
+xxxx:0531 26            ES:
+xxxx:0532 A10002        MOV     AX,[0200]
+xxxx:0535 A21000        MOV     [0010],AL
+xxxx:0538 F3            REPZ
+xxxx:0539 A4            MOVSB
+xxxx:053A E460          IN      AL,60
+xxxx:053C EE            OUT     DX,AL
+xxxx:053D 9A000100F0    CALL    F000:0100
+xxxx:0542 EA0000FFFF    JMP     FFFF:0000
+xxxx:0547 CD21          INT     21
+xxxx:0549 CC            INT     3
+xxxx:054A C20400        RET     0004
+xxxx:054D 62            DB      62
+xxxx:054E D40A          AAM
+xxxx:0550 91            XCHG    AX,CX
+xxxx:0551 1E            PUSH    DS
+xxxx:0552 07            POP     ES
+xxxx:0553 A801          TEST    AL,01
+xxxx:0555 B44C          MOV     AH,4C
+xxxx:0557 86E0          XCHG    AL,AH
+xxxx:0559 74FE          JZ      0559
+xxxx:055B E8FDFF        CALL    055B
+xxxx:055E E2FE          LOOP    055E
+xxxx:0560 D7            XLAT

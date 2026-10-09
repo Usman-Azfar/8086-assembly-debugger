@@ -1,0 +1,23 @@
+# The caret points at the character that caused the error
+-x
+ ^ Error
+-d 12345
+       ^ Error
+-d 200 100
+       ^ Error
+-d 200 L 0
+         ^ Error
+-f 200 1
+       ^ Error
+-e 200 "open
+       ^ Error
+-e 200
+      ^ Error
+-r zz
+   ^ Error
+-t 0
+   ^ Error
+-h 1
+    ^ Error
+-u 100 xyz
+       ^ Error

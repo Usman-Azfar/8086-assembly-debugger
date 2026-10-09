@@ -1,0 +1,12 @@
+e 200 48 65 "llo, World!" 0d 0a 24
+d 200 L 10
+d 205 L 4
+f 300 L 25 "ab"
+d 300 32F
+d 330 L 3
+d ds:100 L 3
+e 400 'it''s'
+d 400 L 4
+h 1234 0fff
+h 1 2
+q

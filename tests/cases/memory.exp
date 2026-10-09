@@ -1,0 +1,12 @@
+xxxx:0200  48 65 6C 6C 6F 2C 20 57-6F 72 6C 64 21 0D 0A 24   Hello, World!..$
+# A dump that starts mid-line leaves the earlier columns blank
+xxxx:0200                 2C 20 57-6F                             , Wo
+xxxx:0300  61 62 61 62 61 62 61 62-61 62 61 62 61 62 61 62   abababababababab
+xxxx:0310  61 62 61 62 61 62 61 62-61 62 61 62 61 62 61 62   abababababababab
+xxxx:0320  61 62 61 62 61 00 00 00-00 00 00 00 00 00 00 00   ababa...........
+xxxx:0330  00 00 00
+xxxx:0100  B8 FF 7F
+# Two quoted strings next to each other
+xxxx:0400  69 74 73 00
+2233  0235
+0003  FFFF

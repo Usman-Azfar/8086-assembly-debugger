@@ -1,0 +1,13 @@
+# Initial state matches DEBUG.COM: SP=FFFE, IP=0100, flags NV UP EI PL NZ NA PO NC
+AX=0000  BX=0000  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0100   NV UP EI PL NZ NA PO NC
+xxxx:0100 B8FF7F        MOV     AX,7FFF
+# Changing a register shows the old value, then a ':' prompt
+AX 0000
+BX 0000
+CX 0000
+IP 0100
+# Empty input keeps BX; "rcx" without a space and mixed case both work
+AX=1234  BX=0000  CX=00A5  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0200   NV UP EI PL NZ NA PO NC
+xxxx:0200 0000          ADD     [BX+SI],AL

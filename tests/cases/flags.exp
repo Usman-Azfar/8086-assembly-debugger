@@ -1,0 +1,8 @@
+NV UP EI PL NZ NA PO NC -
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0100   OV DN DI NG ZR AC PE CY
+OV DN DI NG ZR AC PE CY -
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0100   NV UP EI PL NZ NA PO NC
+# An invalid flag name is reported and nothing is changed
+NV UP EI PL NZ NA PO NC -
+                            ^ Error
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0100   NV UP EI PL NZ NA PO NC

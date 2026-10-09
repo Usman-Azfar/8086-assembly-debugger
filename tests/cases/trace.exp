@@ -1,0 +1,47 @@
+# Every step of the demo program, with the flags the 8086 really produces
+# MOV AX,7FFF
+AX=7FFF  BX=0000  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0103   NV UP EI PL NZ NA PO NC
+# ADD AX,0001: 7FFF+1 = 8000 overflows into the sign bit; low nibble carries
+AX=8000  BX=0000  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0106   OV UP EI NG NZ AC PE NC
+# SUB AX,AX
+AX=0000  BX=0000  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0108   NV UP EI PL ZR NA PE NC
+# DEC AX: 0-1 borrows from the low nibble; DEC never changes CF
+AX=FFFF  BX=0000  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0109   NV UP EI NG NZ AC PE NC
+# MOV CX,0003
+AX=FFFF  BX=0000  CX=0003  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=010C   NV UP EI NG NZ AC PE NC
+# ADD AX,CX: FFFF+3 = 0002 with carry out; 02h has one bit set -> PO
+AX=0002  BX=0000  CX=0003  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=010E   NV UP EI PL NZ AC PO CY
+# LOOP 010C (CX=2)
+AX=0002  BX=0000  CX=0002  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=010C   NV UP EI PL NZ AC PO CY
+# ADD AX,CX: 2+2 = 4
+AX=0004  BX=0000  CX=0002  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=010E   NV UP EI PL NZ NA PO NC
+# LOOP 010C (CX=1)
+AX=0004  BX=0000  CX=0001  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=010C   NV UP EI PL NZ NA PO NC
+# ADD AX,CX: 4+1 = 5 (two bits set -> PE)
+AX=0005  BX=0000  CX=0001  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=010E   NV UP EI PL NZ NA PE NC
+# LOOP falls through (CX=0)
+AX=0005  BX=0000  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0110   NV UP EI PL NZ NA PE NC
+# STC
+AX=0005  BX=0000  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0111   NV UP EI PL NZ NA PE CY
+# MOV BX,0200
+AX=0005  BX=0200  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0114   NV UP EI PL NZ NA PE CY
+# MOV [BX],AX
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0116   NV UP EI PL NZ NA PE CY
+xxxx:0116 EBFE          JMP     0116
+# JMP 0116 jumps to itself
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0116   NV UP EI PL NZ NA PE CY
+# The program stored AX at DS:0200
+xxxx:0200  05 00

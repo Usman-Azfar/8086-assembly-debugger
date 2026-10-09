@@ -1,0 +1,14 @@
+# MOV AH,02 / MOV DL,41 / INT 21h prints "A"; the step stops right after the INT
+AX=0200  BX=0000  CX=0000  DX=0000  SP=FFFE  BP=0000  SI=0000  DI=0000
+AX=0200  BX=0000  CX=0000  DX=0041  SP=FFFE  BP=0000  SI=0000  DI=0000
+xxxx:0604 CD21          INT     21
+AAX=0241  BX=0000  CX=0000  DX=0041  SP=FFFE  BP=0000  SI=0000  DI=0000
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0606   NV UP EI PL NZ NA PO NC
+xxxx:0606 90            NOP
+# NOP, then the program's own INT 3 stops just after it
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0607   NV UP EI PL NZ NA PO NC
+xxxx:0607 CC            INT     3
+DS=xxxx  ES=xxxx  SS=xxxx  CS=xxxx  IP=0608   NV UP EI PL NZ NA PO NC
+xxxx:0608 90            NOP
+# INT 20h at offset 0 would end the debugger, so T refuses it
+Not traced: that instruction would end the debugger itself
