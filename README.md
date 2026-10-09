@@ -1,6 +1,6 @@
 # 8086 Register Command Debugger
 
-[![Build and test](https://github.com/Usman-Azfar/Register-Command-Assembly-Language/actions/workflows/build.yml/badge.svg)](https://github.com/Usman-Azfar/Register-Command-Assembly-Language/actions/workflows/build.yml)
+[![Build and test](https://github.com/Usman-Azfar/8086-assembly-debugger/actions/workflows/build.yml/badge.svg)](https://github.com/Usman-Azfar/8086-assembly-debugger/actions/workflows/build.yml)
 
 A machine-level debugger for MS-DOS, written in pure 8086 assembly language and modelled on the classic `DEBUG.COM`. It loads a program into its own 64 KB memory segment. From there you can inspect and change its registers, flags and memory, disassemble its code, and **execute it one real CPU instruction at a time** using the processor's Trap Flag.
 
@@ -97,14 +97,20 @@ build.bat       one-line build with JWasm
 
 You need a MASM-compatible assembler and a DOS environment.
 
-1. Install [JWasm](https://github.com/Baron-von-Riedesel/JWasm) (free, MASM-compatible) and [DOSBox-X](https://dosbox-x.com/) or DOSBox.
-2. Build: run `build.bat`, or `jwasm -mz -Fo CPROJ.EXE CPROJ.ASM` inside `src/`. JWasm writes a DOS `.EXE` directly, so no linker is needed.
-3. Run it in DOSBox:
+1. Get the code:
    ```text
-   mount c path\to\Register-Command-Assembly-Language\src
+   git clone https://github.com/Usman-Azfar/8086-assembly-debugger.git
+   ```
+2. Install [JWasm](https://github.com/Baron-von-Riedesel/JWasm) (free, MASM-compatible) and [DOSBox-X](https://dosbox-x.com/) or DOSBox.
+3. Build: run `build.bat`, or `jwasm -mz -Fo CPROJ.EXE CPROJ.ASM` inside `src/`. JWasm writes a DOS `.EXE` directly, so no linker is needed.
+4. Run it in DOSBox:
+   ```text
+   mount c path\to\8086-assembly-debugger\src
    c:
    CPROJ
    ```
+
+You don't have to build it yourself: every successful CI run publishes `CPROJ.EXE` as a downloadable artifact (you need to be signed in to GitHub) on the [Actions page](https://github.com/Usman-Azfar/8086-assembly-debugger/actions/workflows/build.yml).
 
 The build is tested with JWasm 2.20. The source sticks to standard MASM syntax, but other assemblers (MASM, TASM) have not been tested.
 
